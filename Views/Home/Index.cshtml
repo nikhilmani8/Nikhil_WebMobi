@@ -1,0 +1,197 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+@using Nikhil_WebMobi.Models;
+@model clsEmployee
+
+<div class="jumbotron">
+    <h1>Employee</h1>
+</div>
+@using (Html.BeginForm("Index", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <fieldset>
+        <legend>
+            Employee Entry
+        </legend>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    @Html.HiddenFor(j => j.EmpID, Model.EmpID)
+                    Department : @*@Html.DropDownList("ddlDepartment", Model.liDept,"Select Department",new {@class="form-control" });*@
+
+                    @Html.DropDownListFor(j => j.DeptID, Model.liDept, "Select Department", new { @id = "ddlDept", @class = "form-control" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    First Name : @Html.TextBoxFor(j => j.FirstName, Model.FirstName, new { @class = "form-control", @placeholder = "Enter the first name." })
+                </div>
+                <div class="col-md-6">
+                    Last Name : @Html.TextBoxFor(j => j.lastName, Model.lastName, new { @class = "form-control", @placeholder = "Enter the last name." })
+                </div>
+            </div>
+            <div class="row" style="margin-top:15px;">
+                <div class="col-md-6">
+                    Gender :<br /> @foreach (var item in Model.liGender)
+                    {
+                        @Html.RadioButtonFor(j => j.Gender, item.rValue, new { @id = item.rValue })
+
+                        @Html.Label(item.rText, new { @for = item.rValue })<span>&nbsp;</span>
+                    }
+                </div>
+                <div class="col-md-6">
+                    Date of Birth :
+
+                    @Html.EditorFor(j => j.DOB, new { htmlAttributes = new { @class = "form-control", placeholder = "Employee Date Of Birth", @readonly = "true" } })
+                </div>
+            </div>
+
+            <div class="row" style="margin-top:15px;">
+                Photo : @Html.TextBoxFor(j => j.fuImage, Model.imgUrl, new { type = "file", @class = "form-control" })
+            </div>
+        </div>
+    </fieldset>
+    <div class="row" style="margin-top:15px;">
+        <div class="col-md-4">
+
+            <input type="submit" class="btn btn-primary" id="btnSave" name="submit" value="Add Employee" />
+           
+        </div>
+        <div class="col-md-4">
+            <input type="submit" class="btn btn-primary" id="btnUpdate" name="submit" value="Update Employee" />
+
+        </div>
+        <div class="col-md-4">
+            <input type="submit" class="btn btn-danger" id="btnDelete" name="submit" value="Delete Employee" />
+
+        </div>
+
+
+    </div>
+    <div class="row" style="margin-top:15px;">
+        <div class="col-md-12 text-center">
+            @if (@ViewBag.Message != "try again!!")
+            {
+                <span style="color:green">@ViewBag.Message</span>
+            }
+            else
+            {
+                <span style="color:red">@ViewBag.Message</span>
+            }
+        </div>
+    </div>
+        <div class="row" style="margin-top:15px;">
+            <div>
+                <table id="example" class="display" style="width:100%" class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">EmpID</th>
+                            <th scope="col">First Name</th>
+                            <th scope="col">LastName</th>
+                            <th scope="col">Gender</th>
+                            <th scope="col">DOB</th>
+                            <th scope="col">Department</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>EmpID</th>
+                            <th>First Name</th>
+                            <th>LastName</th>
+                            <th>Gender</th>
+                            <th>DOB</th>
+                            <th>Department</th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        }
+        @section Scripts{
+            @Scripts.Render("~/bundles/jqueryui")
+            @Styles.Render("~/Content/cssjqryUi")
+            <link href="~/Content/media/css/jquery.dataTables.css" rel="stylesheet" />
+
+            <script src="~/Content/media/js/jquery.dataTables.js"></script>
+
+            <script type="text/javascript">
+                $(document).ready(function () {
+
+                    $('input[type=datetime]').datepicker({
+                        dateFormat: "dd/M/yy",
+                        changeMonth: true,
+                        changeYear: true,
+                        yearRange: "-60:+0"
+                    });
+
+
+                });
+
+
+            </script>
+
+
+
+
+            <script type="text/javascript">
+        $(document).ready(function () {
+            var d = null;
+            $('#example').DataTable({
+                "Processing": true,
+                "ServerSide": true,
+                "iDisplayLength": 10,
+                "bSearchable": true,
+                "bFilter": true,
+                "bPaginate": true,
+                "ajax": {
+                    "url": "/Home/getEmpDetail",
+                    "type": "POST",
+                    "dataType": "JSON"
+                }, columns: [{ "data": "EmpID", "searchable": true }, { "data": "FirstName" }
+                    , { "data": "LastName" }, { "data": "FGender" }, { "data": "DOB", }, { "data": "Department" },
+                    {
+                        "title": "Actions",
+                        "data": "EmpID",
+                        "searchable": false,
+                        "sortable": false,
+                        "render": function (data, type, full, meta) {
+
+
+                            return '<a href="@Url.Action("Index", "Home")?id='+data+'" class="btn btn-primary">Edit</a>';
+                        }
+                    }]
+
+
+            });
+        });
+        $(document).ready(function () {
+            var table = $('#example').DataTable();
+
+            $('#example tbody').on('click', 'tr', function () {
+                if ($(this).hasClass('selected')) {
+                    $(this).removeClass('selected');
+                }
+                else {
+                    table.$('tr.selected').removeClass('selected');
+                    $(this).addClass('selected');
+                    var customerId = $(this).find("td:first").html();
+
+                }
+            });
+
+            $('#button').click(function () {
+                table.row('.selected').remove().draw(false);
+            });
+        });
+
+
+
+            </script>
+
+        }
+
+

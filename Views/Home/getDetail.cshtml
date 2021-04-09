@@ -1,0 +1,95 @@
+﻿
+@{
+    ViewBag.Title = "Employee Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Nikhil_WebMobi.Models;
+@model clsEmployee
+<h2>getDetail</h2>
+<div class="row">
+    <div>
+        <table 
+               id="TableId"
+               cellspacing="0"
+               align="center"
+               width="100%"></table>
+        <table id="example" class="display" style="width:100%" class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">EmpID</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">LastName</th>
+                    <th scope="col">Gender</th>
+                    <th scope="col">DOB</th>
+                    <th scope="col">Department</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>EmpID</th>
+                    <th>First Name</th>
+                    <th>LastName</th>
+                    <th>Gender</th>
+                    <th>DOB</th>
+                    <th>Department</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryui")
+    @Styles.Render("~/Content/cssjqryUi")
+    <link href="~/Content/media/css/jquery.dataTables.css" rel="stylesheet" />
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="~/Content/media/js/jquery.dataTables.js"></script>
+   
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#example').DataTable({
+                "Processing": true,
+                "ServerSide": true,
+                "iDisplayLength": 10,
+                "bSearchable": true,
+                "bFilter": true,
+                "bPaginate": true,
+                "ajax": {
+                    "url": "/Home/getEmpDetail",
+                    "type": "POST",
+                    "dataType": "JSON"
+                }, columns: [{ "data": "EmpID", "searchable": true }, { "data": "FirstName" }
+                    , { "data": "LastName" }, { "data": "FGender" }, { "data": "DOB", }, { "data": "Department" },
+                    {
+                        "title": "Actions",
+                        "data": "EmpID",
+                        "searchable": false,
+                        "sortable": false,
+                        "render": function (data, type, full, meta) {
+                            return '<a href="@Url.Action("Index", "Home", new { id = "123" })" class="btn btn-primary">Edit</a>';
+                        }
+                    }  ]
+
+
+            });
+        });
+$('#example tbody').on('click', 'tr', function () {
+                if ($(this).hasClass('selected')) {
+                    $(this).removeClass('selected');
+                }
+                else {
+                    table.$('tr.selected').removeClass('selected');
+                    $(this).addClass('selected');
+                }
+            });
+
+        $('#button').click(function () {
+            table.row('.selected').remove().draw(false);
+        });
+
+
+        
+
+    </script>
+}

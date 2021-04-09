@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="dbWebMobiModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Department">
+    <Key>
+      <PropertyRef Name="DeptID" />
+    </Key>
+    <Property Name="DeptID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Department" Type="varchar" MaxLength="50" />
+    <Property Name="IsActive" Type="bit" />
+  </EntityType>
+  <EntityType Name="Employee">
+    <Key>
+      <PropertyRef Name="EmpID" />
+    </Key>
+    <Property Name="EmpID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FirstName" Type="varchar" MaxLength="300" />
+    <Property Name="LastName" Type="varchar" MaxLength="300" />
+    <Property Name="Gender" Type="char" MaxLength="1" />
+    <Property Name="DOB" Type="date" />
+    <Property Name="ImgUrl" Type="varchar" MaxLength="250" />
+    <Property Name="DepartmentID" Type="int" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'dbWebMobi.dbo.vwEmpDetail' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="vwEmpDetail">
+    <Key>
+      <PropertyRef Name="EmpID" />
+    </Key>
+    <Property Name="EmpID" Type="int" Nullable="false" />
+    <Property Name="FirstName" Type="varchar" MaxLength="300" />
+    <Property Name="LastName" Type="varchar" MaxLength="300" />
+    <Property Name="Gender" Type="char" MaxLength="1" />
+    <Property Name="FGender" Type="varchar" MaxLength="6" />
+    <Property Name="DOB" Type="nvarchar" MaxLength="4000" />
+    <Property Name="ImgUrl" Type="varchar" MaxLength="250" />
+    <Property Name="DepartmentID" Type="int" />
+    <Property Name="Department" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <Function Name="spEmployee" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="flag" Type="char" Mode="In" />
+    <Parameter Name="EmpID" Type="int" Mode="In" />
+    <Parameter Name="FirstName" Type="varchar" Mode="In" />
+    <Parameter Name="LastName" Type="varchar" Mode="In" />
+    <Parameter Name="Gender" Type="char" Mode="In" />
+    <Parameter Name="DOB" Type="date" Mode="In" />
+    <Parameter Name="ImgUrl" Type="varchar" Mode="In" />
+    <Parameter Name="DepartmentID" Type="int" Mode="In" />
+    <Parameter Name="IsActive" Type="bit" Mode="In" />
+  </Function>
+  <EntityContainer Name="dbWebMobiModelStoreContainer">
+    <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Employee" EntityType="Self.Employee" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="vwEmpDetail" EntityType="Self.vwEmpDetail" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [vwEmpDetail].[EmpID] AS [EmpID], 
+    [vwEmpDetail].[FirstName] AS [FirstName], 
+    [vwEmpDetail].[LastName] AS [LastName], 
+    [vwEmpDetail].[Gender] AS [Gender], 
+    [vwEmpDetail].[FGender] AS [FGender], 
+    [vwEmpDetail].[DOB] AS [DOB], 
+    [vwEmpDetail].[ImgUrl] AS [ImgUrl], 
+    [vwEmpDetail].[DepartmentID] AS [DepartmentID], 
+    [vwEmpDetail].[Department] AS [Department]
+    FROM [dbo].[vwEmpDetail] AS [vwEmpDetail]</DefiningQuery>
+    </EntitySet>
+  </EntityContainer>
+</Schema>
